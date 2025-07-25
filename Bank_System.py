@@ -1,5 +1,6 @@
-
+## General Information of BankAccount
 class BankAccount:
+    
     def __init__(self, accountnumber, holder, balance):
         self.accountnumber = accountnumber
         self.holder = holder
@@ -21,7 +22,7 @@ class BankAccount:
         else:
             print(" Insufficient balance.")
 
-
+## Saving Account
 class Saving(BankAccount):
     def __init__(self, ist, accountnumber, holder, balance):
         super().__init__(accountnumber, holder, balance)
@@ -34,7 +35,7 @@ class Saving(BankAccount):
         print(f" interest amount: {interest}")
         print(f" balance after interest: {self.balance + interest}")
 
-
+##Currnet Account
 class Current(BankAccount):
     def __init__(self, credit_limit, accountnumber, holder, balance):
         super().__init__(accountnumber, holder, balance)
@@ -53,7 +54,7 @@ class Current(BankAccount):
             print(" withdrawal denied. Exceeds credit limit.")
 
 
-
+##print opration
 print(" Welcome to  Bank ")
 
 while True:
@@ -114,7 +115,7 @@ while True:
                     break
                 else:
                     print(" Invalid input. Try again.")
-
+## accept only value in numeric not in string
         except ValueError:
             print(" Please enter valid numeric values.")
 
