@@ -1,109 +1,103 @@
-import csv
-def creet():
+import csv  # use built-in csv
 
-    global Dataa
+def action_create():
+    """
+     this method data is variable which is global and  country state_ans city_ans  is just take input and either or user enter a data or not
+    """
+    global data
     while True:
-        Cuntry_ans = input("you want add cuntry? y/n = ")
-        if Cuntry_ans == 'n':
-            if not Dataa:
-                pass
-            else:
-                print("your Data is: ")
+        country = input("you want add country? y/n = ")
+        if country == 'n':
+            if data:
+                print("your Data is: ", data)
             return
-        elif Cuntry_ans != 'y':
+        elif country != 'y':
             print("not correct choice")
             continue
         else:
-            Cuntry_nm = input("give country name: ")
-            if Cuntry_nm in Dataa:
+            country_name = input("give country name: ")
+            if country_name in data:
                 print("Already added. Try remove or give new")
                 continue
-            Dataa[Cuntry_nm] = {}
+            data[country_name] = {}
             while True:
-                Stat_ans = input(f"want to add state in {Cuntry_nm}? y/n = ")
-                if Stat_ans == 'n':
+                state_ans = input(f"want to add state in {country_name}? y/n = ")
+                if state_ans == 'n':
                     break
-                elif Stat_ans != 'y':
+                elif state_ans != 'y':
                     print("not correct choice")
                     continue
                 else:
-                    Stat_nm = input("state name: ")
-                    if Stat_nm in Dataa[Cuntry_nm]:
-                        print(f"Already added {Stat_nm} in {Cuntry_nm}")
+                    state_name = input("state name: ")
+                    if state_name in data[country_name]:
+                        print(f"Already added {state_name} in {country_name}")
                         continue
-                    Dataa[Cuntry_nm][Stat_nm] = []
+                    data[country_name][state_name] = []
                     while True:
-                        City_ans = input(f"Add city in {Stat_nm}? y/n = ")
-                        if City_ans == 'n':
+                        city_ans = input(f"Add city in {state_name}? y/n = ")
+                        if city_ans == 'n':
                             break
-                        elif City_ans != 'y':
+                        elif city_ans != 'y':
                             print("not correct choice")
                             continue
                         else:
-                            City_nm = input("City name: ")
-                            if City_nm in Dataa[Cuntry_nm][Stat_nm]:
+                            city_name = input("City name: ")
+                            if city_name in data[country_name][state_name]:
                                 print("Already exist, try other name.")
                                 continue
-                            Dataa[Cuntry_nm][Stat_nm].append(City_nm)
+                            data[country_name][state_name].append(city_name)
 
 
-csv_data_out = []
+Final_data = []
 
 
 def dicttolist(dictt):
     """
-    Convert dictt to list for csv write
+    take data input in form of dict and conver insert in to list to add in sheet
     """
+
     if not dictt:
         print("No data found.")
         return
     for Cntry in dictt:
         if dictt[Cntry] == {}:
             row = [Cntry, "", ""]
-            csv_data_out.append(row)
+            Final_data.append(row)
             continue
-        citflg, stflg = 1, 1
-        for st in dictt[Cntry]:
-            if stflg == 1:
-                row = [Cntry, st]
-                stflg += 1
-            else:
-                row = ["", st]
+        for st_idx, st in enumerate(dictt[Cntry]):
+            row = [Cntry if st_idx == 0 else "", st]
             if not dictt[Cntry][st]:
                 row.append("")
-                csv_data_out.append(row)
+                Final_data.append(row)
             else:
-                for ct in dictt[Cntry][st]:
-                    if citflg == 1:
-                        row.append(ct)
-                        citflg += 1
-                        csv_data_out.append(row)
+                for ct_idx, ct in enumerate(dictt[Cntry][st]):
+                    if ct_idx == 0:
+                        Final_data.append(row + [ct])
                     else:
-                        csv_data_out.append(["", "", ct])
-                citflg = 1
+                        Final_data.append(["", "", ct])
 
 
-Dataa = {}
+data = {}
 
 while True:
     chs = input("\nmake from fix data = inbuild\nmake new data = new\nWhat u want: ")
     match chs:
         case "inbuild":
-            dicttolist({'india': {"Guj": ['Ahmedabad', "Gandhinagar"], 'Raj': ["Udaipur", "Jodhpur"]},
-                        'Pak': {"Guj": ['Ahmedabad', "Gandhinagar"], 'Raj': ["Udaipur", "Jodhpur"]}})
+            dicttolist({
+                'India': {"Guj": ['Ahmedabad', "Gandhinagar"], 'Raj': ["Udaipur", "Jodhpur"]},
+                'Pakistan': {"Sindh": ['Karachi', "Hyderabad"], 'Punjab': ["Lahore", "Multan"]}
+            })
             break
         case "new":
-            creet()
-            dicttolist(Dataa)
+            action_create()
+            dicttolist(data)
             break
         case _:
             print("Plz give correct opt")
 
-with open("output.csv", 'a', newline='') as f:
+with open("output.csv", 'w', newline='') as f:
     wr = csv.writer(f)
-    for dt in csv_data_out:
-        wr.writerow(dt)
+    wr.writerow(["Country", "State", "City"])
+    wr.writerows(Final_data)
 
-print(csv_data_out)
-
-
+print("CSV file created successfully!")

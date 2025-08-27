@@ -1,122 +1,129 @@
 import xlwt
 import xlrd
 
-
-def kreeat():
-    """
-    This funtion only creat data and store in Dtaa var.
-    Countr, Stat, Cit: Ask user if want to add or not
-
-    """
-    global Dtaa
+def action_create():
+    global data
     while True:
-        Countr_ask = input("you wnt add cuntry? y/n = ")
-        if Countr_ask == 'n':
-            if not Dtaa:
+        country = input("you wnt add cuntry? y/n = ")
+        if country == 'n':
+            if not data:
                 pass
             else:
-                print("ur Data is ready: ")
+                print("result data: ")
             return
-        elif Countr_ask != 'y':
-            print("Wrong choise")
+        elif country != 'y':
+            print(" worng choise !!!")
             continue
         else:
-            Cntr_name = input("give country name: ")
-            if Cntr_name in Dtaa:
-                print("Alrdy exist. try new or delet first")
+            country_name = input("give country name: ")
+            if country_name in data:
+                print("alrdy exist. try new or delet first")
                 continue
-            Dtaa[Cntr_name] = {}
+            data[country_name] = {}
             while True:
-                Stat_ask = input(f"Add state in {Cntr_name}? y/n = ")
-                if Stat_ask == 'n':
+                state_ask = input(f"Add state in {country_name}? y/n = ")
+                if state_ask == 'n':
                     break
-                elif Stat_ask != 'y':
-                    print("Wrong choise")
+                elif state_ask != 'y':
+                    print("Wrong choise !!!")
                     continue
                 else:
-                    St_name = input("give state name: ")
-                    if St_name in Dtaa[Cntr_name]:
-                        print(f"{St_name} alrdy in {Cntr_name}")
+                    state_name = input("give state name: ")
+                    if state_name in data[country_name]:
+                        print(f"{state_name} alrdy in {country_name}")
                         continue
-                    Dtaa[Cntr_name][St_name] = []
+                    data[country_name][state_name] = []
                     while True:
-                        Cit_ask = input(f"Add city in {St_name}? y/n = ")
-                        if Cit_ask == 'n':
+                        city = input(f"Add city in {state_name}? y/n = ")
+                        if city == 'n':
                             break
-                        elif Cit_ask != 'y':
-                            print("Wrong choise")
+                        elif city != 'y':
+                            print("Wrong choise !!!")
                             continue
                         else:
-                            Ct_name = input("city name plz: ")
-                            if Ct_name in Dtaa[Cntr_name][St_name]:
-                                print("Exist already.")
+                            city_name = input("city name plz: ")
+                            if city_name in data[country_name][state_name]:
+                                print("Exist already !!.")
                                 continue
-                            Dtaa[Cntr_name][St_name].append(Ct_name)
-
-
+                            data[country_name][state_name].append(city_name)
 csv_out = []
 
 
-def tolist(dicti):
+def tolist(dict):
     """
-    Convert dict data to list for xls write
+    convert data which enter by input in form of dict to list to write in xlsx format
+    state_line city_line indicate line it means after enter one value is there any other
+    state and city it moves to the new line
     """
-    if not dicti:
+    if not dict:
         print("No data...")
         return
-    for ctry in dicti:
-        if dicti[ctry] == {}:
+    for idx, ctry in enumerate(dict):
+        # add new line when new country add 
+        if idx > 0:
+            csv_out.append(["", "", ""])
+
+        if dict[ctry] == {}:
             one = [ctry, "", ""]
             csv_out.append(one)
             continue
-        st_flag, ct_flag = 1, 1
-        for st in dicti[ctry]:
-            if st_flag == 1:
+       ## staring line 
+        state_line, city_line = 1, 1
+        for st in dict[ctry]:
+            if state_line == 1:
                 one = [ctry, st]
-                st_flag += 1
+                state_line += 1
             else:
                 one = ["", st]
-            if not dicti[ctry][st]:
+            if not dict[ctry][st]:
                 one.append("")
                 csv_out.append(one)
             else:
-                for ct in dicti[ctry][st]:
-                    if ct_flag == 1:
+                for ct in dict[ctry][st]:
+                    if city_line == 1:
                         one.append(ct)
-                        ct_flag += 1
+                        city_line += 1
                         csv_out.append(one)
                     else:
                         csv_out.append(["", "", ct])
-                ct_flag = 1
+                city_line = 1
 
 
-Dtaa = {}
+data = {} ## final dictory which collect the data form user input
 
 while True:
-    chs = input("\nold data = inbuild\nnew data = new\nU choos what? ")
+    chs = input("\nold data = inbuild\nnew data = new\nchoos what you want(inbuild/new)? ")
     match chs:
         case "inbuild":
             tolist({'india': {"Guj": ['Ahmedabad', "Gandhinagar"], 'Raj': ["Udaipur", "Jodhpur"]},
-                    'Pak': {"Guj": ['Ahmedabad', "Gandhinagar"], 'Raj': ["Udaipur", "Jodhpur"]}})
+                    'Pak': {"Sindh": ['Karachi'], 'Punjab': ["Lahore", "Multan"]}})
             break
         case "new":
-            kreeat()
-            tolist(Dtaa)
+            action_create()
+            tolist(data)
             break
         case _:
             print("Plz write correct opt")
 
-# create xl file
 book = xlwt.Workbook()
 sh = book.add_sheet("Sheet1")
+style_bold = xlwt.easyxf('font: bold on')
+
+# Apply bold style to headers
+sh.write(0, 0, "Country", style_bold)
+sh.write(0, 1, "State", style_bold)
+sh.write(0, 2, "City", style_bold)
+
+# Write data rows (shifted by +1 because header is row 0)
 for r in range(len(csv_out)):
     for c in range(len(csv_out[r])):
-        sh.write(r, c, csv_out[r][c])
+        sh.write(r + 1, c, csv_out[r][c])
+
 xl_file = "data_file.xls"
 book.save(xl_file)
 print(f"{xl_file} saved done.")
 
-# Read xl file
+# Read xlsx file
 try:
     bk = xlrd.open_workbook(xl_file)
     sh = bk.sheet_by_index(0)
