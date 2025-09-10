@@ -4,7 +4,6 @@ sales_data = [
     {"product_id": 101, "product_name": "Smartphone", "sale_amount": 400},
     {"product_id": 103, "product_name": "Smartwatch", "sale_amount": 700}
 ]
-
 total = 0
 for rec in sales_data:
     total += rec["sale_amount"]
@@ -29,10 +28,10 @@ for rec in sales_data:
             "product_id": pid,
             "product_name": pname
         }
-ans = {
+analyz_data = {
     "Total Sales": total,
     "Average Sales": average,
     "Highest-Selling Product": highest_product
 }
 
-print(ans)
+print(analyz_data)

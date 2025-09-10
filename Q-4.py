@@ -1,20 +1,23 @@
 def list_nouns(nouns):
-    phrases = []
-     # Apply  noun according to char
+    """
+    this method count length of list and
+    if list length is 2 put and before last element
+    and if list is more than 2 put appropriate noun
+
+    return sentance
+    """
+    sentance = []
     for word in nouns:
         if word[0].lower() in "aeiou":
-            phrases.append("an " + word)
+            sentance.append("an " + word)
         else:
-            phrases.append("a " + word)
+            sentance.append("a " + word)
 
-    # if there is two word then join with and
-    # otherwise apply and just before last word
-    if len(phrases) == 2:
-        sentence = phrases[0] + " and " + phrases[1]
+    if len(sentance) == 2:
+        sentence = sentance[0] + " and " + sentance[1]
     else:
-        sentence = ", ".join(phrases[:-1]) + " and " + phrases[-1]
+        sentence = ", ".join(sentance[:-1]) + " and " + sentance[-1]
 
-    # Step 3: capitalize first letter + add period
     sentence = sentence[0].upper() + sentence[1:] + "."
 
     return sentence
@@ -22,12 +25,6 @@ def list_nouns(nouns):
 
 # Example 1
 print(list_nouns(["orange", "apple", "pear"]))
-# "An orange, an apple and a pear."
 
 # Example 2
 print(list_nouns(["keyboard", "mouse"]))
-# "A keyboard and a mouse."
-
-# Example 3
-print(list_nouns(["car", "plane", "truck", "boat", "apple"]))
-# "A car, a plane, a truck, a boat and an apple."

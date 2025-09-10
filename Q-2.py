@@ -1,25 +1,23 @@
-def reverse_only_letters(str)  :
-    #  convert sentence in to letters and reverse it
-    letters = [ch for ch in str if ch.isalpha()]
-    letters.reverse()  # reverse them
+def reverse_letters(input_str):
+    """
+    this method store only letters in reverse and 
+    append in new list in reverse
 
-    # create new list and append only if char is alpha
-    result = []
+    return reverse_string
+    """
+    letters = [letter for letter in input_str if letter.isalpha()]
+    letters.reverse()
+    reverse_string = []
     idx = 0
-    for ch in str :
-        if ch.isalpha() :
-            result.append(letters[idx])
+    for letter in input_str:
+        if letter.isalpha():
+            reverse_string.append(letters[idx])
             idx += 1
-        else :
-            result.append(ch)
+        else:
+            reverse_string.append(letter)
 
-    return "".join(result)
-
-
-
-var = "a-bC-dEf-ghIj"
-print(reverse_only_letters(var))
+    return "".join(reverse_string)
 
 
-var = "Test1ng-Leet=code-Q!"
-print(reverse_only_letters(var))
+example1 = "a-bC-dEf-ghIj"
+print(reverse_letters(example1))
